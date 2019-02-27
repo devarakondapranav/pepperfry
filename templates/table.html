@@ -1,0 +1,350 @@
+<html>
+
+<head>
+    <title></title>
+    <style type="text/css">
+        div#content {
+    display: none;
+    }
+ 
+div#loading {
+    top: 200 px;
+    margin: auto;
+    position: absolute;
+    z-index: 1000;
+    width: 160px;
+    height: 24px;
+    background: url(loading.gif) no-repeat;
+    cursor: wait;
+    }
+    </style>
+</head>
+<body>
+
+    
+    <h1>Assign orderss</h1>
+
+
+        
+            <input type="button" id="addRow" value="Add New " onclick="addRow()" class="btn btn-danger" /><br><br>
+            <form action="http://localhost:5000/maps" method="POST">
+                No of vehicles<input type="number" name="num_vehicles" id="num_vehicles" onfocusout = "showCapacityBoxes()"><br><br>
+                <div id = driver_capacities>
+                    
+                </div>
+                
+                <div id="cont">
+                    
+                </div>
+            <input type="hidden" name="rowcount" id = "rowcount" value="0">
+            <div id ="submitButton"><br><br></div>
+            </form>
+
+
+<script>
+    // ARRAY FOR HEADER.
+    var arrHead = new Array();
+    arrHead = ['', 'Name of the customer','Address', 'Capacity', 'Time window'];      // SIMPLY ADD OR REMOVE VALUES IN THE ARRAY FOR TABLE HEADERS.
+
+    // FIRST CREATE A TABLE STRUCTURE BY ADDING A FEW HEADERS AND
+    // ADD THE TABLE TO YOUR WEB PAGE.
+    var count = -1;
+    var flag = false;
+
+    function createTable() {
+        var empTable = document.createElement('table');
+        empTable.setAttribute('id', 'empTable');  
+               // SET THE TABLE ID.
+
+        var tr = empTable.insertRow(-1);
+
+        for (var h = 0; h < arrHead.length; h++) {
+            var th = document.createElement('th');          // TABLE HEADER.
+            th.innerHTML = arrHead[h];
+            tr.appendChild(th);
+        }
+
+        var div = document.getElementById('cont');
+        div.appendChild(empTable);    // ADD THE TABLE TO YOUR WEB PAGE.
+    }
+    createTable();
+
+    // ADD A NEW ROW TO THE TABLE.s
+    function addRow()
+    {
+        var empTab = document.getElementById('empTable');
+        var rowCnt = empTab.rows.length;        // GET TABLE ROW COUNT.
+        var tr = empTab.insertRow(rowCnt);      // TABLE ROW.
+        tr = empTab.insertRow(rowCnt);
+        count++;
+
+        var countElement = document.getElementById("rowcount").value;
+        document.getElementById("rowcount").value = Number(countElement) + 1;
+
+        for (var c = 0; c < arrHead.length; c++) {
+            
+            var td = document.createElement('td');          // TABLE DEFINITION.
+            td = tr.insertCell(c);
+
+            if (false) {           // FIRST COLUMN.
+                // ADD A BUTTON.
+                var button = document.createElement('input');
+
+                // SET INPUT ATTRIBUTE.
+                button.setAttribute('type', 'button');
+                button.setAttribute('value', 'Remove');
+
+                // ADD THE BUTTON's 'onclick' EVENT.
+                button.setAttribute('onclick', 'removeRow(this)');
+                button.setAttribute('class', 'btn btn-primary')
+
+                td.appendChild(button);
+            }
+            else {
+                // CREATE AND ADD TEXTBOX IN EACH CELL.
+                if(false) //this is file
+                {
+                  var ele = document.createElement('input');
+                ele.setAttribute('type', 'text');
+                ele.setAttribute('value', '');
+                ele.setAttribute('name', 'address'+String(count));
+                ele.setAttribute('id', 'address'+String(count));
+
+                td.appendChild(ele);
+                }
+                else{
+                  if(c == 1)//firstname
+                  {
+                    var ele = document.createElement('input');
+                    ele.setAttribute('type', 'text');
+                    ele.setAttribute('value', '');
+                    ele.setAttribute('name', 'name' + String(count));
+                    ele.setAttribute('id', 'name' + String(count));
+
+
+                    td.appendChild(ele);
+                  }
+                  else if(c==2)//lastname
+                  {
+                    var ele = document.createElement('input');
+                    ele.setAttribute('type', 'text');
+                    ele.setAttribute('value', '');
+                    ele.setAttribute('name', 'address'+String(count));
+                    ele.setAttribute('id', 'address'+String(count));
+
+
+                    td.appendChild(ele);
+                  }
+                  else if (c==3)
+                  {
+                    var ele = document.createElement('input');
+                    ele.setAttribute('type', 'text');
+                    ele.setAttribute('value', '');
+                    ele.setAttribute('name', 'capacity'+String(count));
+                    ele.setAttribute('id', 'capacity'+String(count));
+
+
+                    td.appendChild(ele);
+                    document.getElementById('capacity'+String(count)).style.visibility = "hidden";
+                  }
+                  else if (c==4)
+                  {
+                    var ele = document.createElement('input');
+                    ele.setAttribute('type', 'text');
+                    ele.setAttribute('value', '');
+                    ele.setAttribute('name', 'time_window'+String(count));
+                    ele.setAttribute('id', 'time_window'+String(count));
+
+
+                    td.appendChild(ele);
+                    document.getElementById('time_window'+String(count)).style.visibility = "hidden";
+                  }
+                  
+              }
+            }
+        }
+        if(flag == false)
+        {          
+
+          var ele = document.createElement('input');
+          ele.setAttribute('type', 'radio');
+          ele.setAttribute('value', 'distance');
+          ele.setAttribute('class', 'btn btn-success');
+          ele.setAttribute('name', 'typeOfRouting');
+          ele.setAttribute('id', 'distance')
+          ele.setAttribute('onclick', 'adjustui()');
+          flag = true;
+          document.getElementById("submitButton").appendChild(ele);
+          varText = document.createElement("label");
+          varText.innerHTML = "Distance";
+          document.getElementById("submitButton").appendChild(varText);
+          document.getElementById("distance").checked = true;
+
+
+
+
+          var ele = document.createElement('input');
+          ele.setAttribute('type', 'radio');
+          ele.setAttribute('value', 'time');
+          ele.setAttribute('id', 'time');
+          ele.setAttribute('class', 'btn btn-success');
+          ele.setAttribute('name', 'typeOfRouting');
+          ele.setAttribute('onclick', 'adjustui()');
+          flag = true;
+          document.getElementById("submitButton").appendChild(ele);
+          varText = document.createElement("label");
+          varText.innerHTML = "Time";
+          document.getElementById("submitButton").appendChild(varText);
+
+          var ele = document.createElement('input');
+          ele.setAttribute('type', 'radio');
+          ele.setAttribute('value', 'capacity');
+          ele.setAttribute('id', 'capacity');
+          ele.setAttribute('class', 'btn btn-success');
+          ele.setAttribute('name', 'typeOfRouting');
+          ele.setAttribute('onclick', 'adjustui()');
+          flag = true;
+          document.getElementById("submitButton").appendChild(ele);
+          varText = document.createElement("label");
+          varText.innerHTML = "Capacity"
+          document.getElementById("submitButton").appendChild(varText);
+
+
+
+          var br = document.createElement('br');
+          document.getElementById("submitButton").appendChild(br);
+
+          var ele = document.createElement('input');
+          ele.setAttribute('type', 'submit');
+          ele.setAttribute('value', 'Submit Data');
+          ele.setAttribute('class', 'btn btn-success');
+          flag = true;
+          //ele.setAttribute('onclick', 'submitData()');
+          document.getElementById("submitButton").appendChild(ele);
+
+        }
+        adjustui();
+    }
+
+    // DELETE TABLE ROW.
+    function removeRow(oButton) {
+        var empTab = document.getElementById('empTable');
+        empTab.deleteRow(oButton.parentNode.parentNode.rowIndex);       // BUTTON -> TD -> TR.
+    }
+
+
+    function adjustui()
+    {
+        var empTab = document.getElementById('empTable');
+
+        var rowCnt = empTab.rows.length;
+
+        
+        
+            
+            if(document.getElementById('distance').checked == true)
+            {
+                var divBox = document.getElementById('driver_capacities');
+                divBox.innerHTML = null;
+                for(var i=0; i<rowCnt;i++)
+                {
+                    document.getElementById('capacity' + String(i)).style.visibility = "hidden";
+                    document.getElementById('time_window' + String(i)).style.visibility = "hidden";
+
+                }
+            }
+            else if(document.getElementById('time').checked == true)
+            {
+                var divBox = document.getElementById('driver_capacities');
+                divBox.innerHTML = null;
+                for(var i=0; i<rowCnt;i++)
+                {
+                    document.getElementById('capacity' + String(i)).style.visibility = "visible";
+                    document.getElementById('time_window' + String(i)).style.visibility = "visible";
+
+                }
+            }
+            else if(document.getElementById('capacity').checked == true)
+            {
+                showCapacityBoxes();
+                 for(var i=0; i<rowCnt;i++)
+                {
+                    document.getElementById('capacity' + String(i)).style.visibility = "visible";
+                    document.getElementById('time_window' + String(i)).style.visibility = "hidden";
+
+                }
+            }
+        
+       
+    }
+    function showCapacityBoxes()
+    {
+        if(document.getElementById('capacity').checked == true)
+        {
+            var num_vehicles = Number(document.getElementById('num_vehicles').value);
+            var divBox = document.getElementById('driver_capacities');
+            divBox.innerHTML = null;
+
+            for(var i=0;i<num_vehicles;i++)
+            {
+                var foo = document.createElement('label');
+                foo.innerHTML = "DriverCapacity " + String(i);
+                divBox.appendChild(foo);
+
+                var tb = document.createElement('input');
+                tb.setAttribute('type', 'text');
+                tb.setAttribute('id', 'driver_capacity' + String(i));
+                tb.setAttribute('name', 'driver_capacity' + String(i));
+                divBox.appendChild(tb);
+
+            }
+        }
+        else
+        {
+
+        }
+
+
+    }
+
+
+    function validateForm()
+    {
+      var myTab = document.getElementById('empTable');
+        var values = new Array();
+
+        // LOOP THROUGH EACH ROW OF THE TABLE.
+        for (row = 1; row < myTab.rows.length - 1; row++) {
+            for (c = 0; c < myTab.rows[row].cells.length; c++) {   // EACH CELL IN A ROW.
+
+                var element = myTab.rows.item(row).cells[c];
+                if (element.childNodes[0].getAttribute('type') == 'text') {
+                    values.push("'" + element.childNodes[0].value + "'");
+                    if(element.childNodes[0].value == '')
+                    {
+                      alert("You have left some fields blank for the " + String(row) + " entry");
+                      return false;
+                    }
+                }
+                else if (element.childNodes[0].getAttribute('type') == 'file') {
+                    
+                    if(element.childNodes[0].files.length == 0)
+                    {
+                      alert("You havent uploaded files for the " + String(row) + " entry");
+                      return false;
+                    }
+                }
+
+            }
+        }
+        
+        console.log(values);
+        return true;
+    }
+
+    
+</script>
+
+</body>
+
+</html>

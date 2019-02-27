@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style type="text/css">
+		div#content {
+    display: none;
+    }
+ 
+div#loading {
+    top: 200 px;
+    margin: auto;
+    position: absolute;
+    z-index: 1000;
+    width: 160px;
+    height: 24px;
+    background: url(loading.gif) no-repeat;
+    cursor: wait;
+    }
+	</style>
+	<script type="text/javascript">// <![CDATA[
+        function preloader(){
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("content").style.display = "block";
+        }//preloader
+        window.onload = preloader;
+// ]]></script>
+</head>
+<body>
+	<div id = "loading">
+		
+	</div>
+	<div id = "content">
+		<div id="customer_details">
+			customer details here<br>
+		<table>
+			{% for add in addresses%}
+		
+	    <tr>
+	      <td>{{loop.index0}}</td>
+	      <td>{{add}}</td>
+	    </tr>
+
+	  {% endfor %}
+		</table>	
+		</div>
+		<div id = "routes">
+			{{optimal_routes}}
+			<form action="http://localhost:5000/submitToDB" method="POST">
+				<input type="hidden" name="optimal_routes" value="{{optimal_routes}}" >
+				<input type="submit" name="" value="Assign to drivers">
+			</form>
+		</div>
+	</div>
+
+
+</body>
+</html>
